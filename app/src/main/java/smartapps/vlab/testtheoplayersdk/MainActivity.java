@@ -2,6 +2,7 @@ package smartapps.vlab.testtheoplayersdk;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.theoplayer.android.api.THEOplayerView;
 import com.theoplayer.android.api.event.EventListener;
@@ -41,7 +42,15 @@ public class MainActivity extends AppCompatActivity {
 
         tpv.getPlayer().addEventListener(PlayerEventTypes.PLAY, mEventListener);
 
+        findViewById(R.id.fullscreen).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tpv.getFullScreenManager().requestFullScreen();
+            }
+        });
     }
+
+
 
     @Override
     protected void onPause() {
