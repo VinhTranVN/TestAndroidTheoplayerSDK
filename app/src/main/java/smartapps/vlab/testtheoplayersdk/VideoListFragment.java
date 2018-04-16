@@ -75,9 +75,6 @@ public class VideoListFragment extends Fragment {
             }
         }
 
-
-
-
         return videos;
     }
 
@@ -86,27 +83,6 @@ public class VideoListFragment extends Fragment {
         super.onResume();
         mAdapter.notifyDataSetChanged();
     }
-
-    //    @Override
-//    protected void onPause() {
-//        super.onPause();
-//        tpv.onPause();
-//    }
-//
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        tpv.onResume();
-//    }
-//
-//    @Override
-//    protected void onDestroy() {
-//        super.onDestroy();
-//
-//        tpv.getPlayer().removeEventListener(PlayerEventTypes.PLAY, mEventListener);
-//        tpv.onDestroy();
-//    }
-
 
     static class VideoAdapterList<T extends ItemVideo> extends RecyclerView.Adapter {
 
@@ -199,7 +175,13 @@ public class VideoListFragment extends Fragment {
 
                 mTHEOplayerView.getPlayer().setSource(mSourceDescription);
 
-                mTHEOplayerView.getPlayer().play();
+                mTHEOplayerView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mTHEOplayerView.getPlayer().play();
+                    }
+                }, 3000);
+
             } else {
                 mTHEOplayerView.onResume();
             }
