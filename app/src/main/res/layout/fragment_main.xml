@@ -12,6 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:transitionName="video_view"
+        app:cssPaths="theoplayer/style.css"
+        app:jsPaths="theoplayer/jquery-3.3.1.min.js,
+                     theoplayer/jquery-ui.min.js,
+                     theoplayer/jquery.simulate.js,
+                     theoplayer/customTheo.js"
         app:layout_constraintDimensionRatio="16:9"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
