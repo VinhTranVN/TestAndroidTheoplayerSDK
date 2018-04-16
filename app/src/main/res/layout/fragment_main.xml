@@ -18,12 +18,21 @@
         app:layout_constraintStart_toStartOf="parent"/>
 
     <Button
-        android:id="@+id/fullscreen"
+        android:id="@+id/btn_open_share_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Full Screen"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="Open Share Video"
+        android:enabled="false"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/theoplayer_view"/>
+
+    <Button
+        android:id="@+id/btn_open_video_list"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Open Video List"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_open_share_video"
         app:layout_constraintTop_toBottomOf="@id/theoplayer_view"/>
 
 </android.support.constraint.ConstraintLayout>
