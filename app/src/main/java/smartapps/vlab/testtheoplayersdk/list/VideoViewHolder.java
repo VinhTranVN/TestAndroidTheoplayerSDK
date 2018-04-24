@@ -41,6 +41,18 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
                 mTHEOplayerView.getFullScreenManager().requestFullScreen();
             }
         });
+
+        itemView.findViewById(R.id.remove_add_view).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mTHEOplayerViewContainer.getChildCount() > 0){
+                    mTHEOplayerViewContainer.removeAllViews();
+                } else {
+                    mTHEOplayerView.getFullScreenManager().exitFullScreen();
+                    mTHEOplayerViewContainer.addView(mTHEOplayerView);
+                }
+            }
+        });
     }
 
     public void bindData(T videoItem) {
@@ -54,7 +66,7 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
 
         mTHEOplayerViewContainer.removeAllViews();
         mTHEOplayerViewContainer.addView(mTHEOplayerView);
-        mTHEOplayerViewContainer.requestLayout();
+        mTHEOplayerViewContainer.invalidate();
         System.out.println(">>> w: " + mTHEOplayerView.getLayoutParams().width + " h: " + mTHEOplayerView.getLayoutParams().height);
     }
 

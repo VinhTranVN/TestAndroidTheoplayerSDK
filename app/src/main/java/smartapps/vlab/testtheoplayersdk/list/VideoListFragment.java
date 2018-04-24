@@ -78,6 +78,7 @@ public class VideoListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        System.out.println(">>> onResume");
         mAdapter.notifyDataSetChanged();
     }
 
