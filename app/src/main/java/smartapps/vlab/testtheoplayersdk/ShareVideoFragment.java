@@ -9,6 +9,7 @@ import android.transition.TransitionInflater;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.theoplayer.android.api.THEOplayerView;
 
@@ -19,7 +20,7 @@ import com.theoplayer.android.api.THEOplayerView;
 public class ShareVideoFragment extends Fragment {
 
 
-    private THEOplayerView mTheOplayerView;
+    private FrameLayout mTheOplayerViewContainer;
 
     public static ShareVideoFragment newInstance() {
         Bundle args = new Bundle();
@@ -42,7 +43,12 @@ public class ShareVideoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_share_video, container, false);
-        mTheOplayerView = view.findViewById(R.id.theoplayer_view);
+        mTheOplayerViewContainer = view.findViewById(R.id.theoplayer_view_container);
+        THEOplayerView currentPlayerView = MyApplication.getInstance().getCurrentPlayerView();
+        if(currentPlayerView != null){
+            mTheOplayerViewContainer.addView(currentPlayerView);
+            currentPlayerView.onResume();
+        }
 
         return view;
     }

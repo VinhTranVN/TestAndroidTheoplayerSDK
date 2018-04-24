@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.theoplayer.android.api.THEOplayerView;
 import com.theoplayer.android.api.event.EventListener;
@@ -27,6 +28,7 @@ import java.util.Iterator;
 public class MainFragment extends Fragment {
 
     private THEOplayerView mTHEOplayerView;
+    private FrameLayout mTHEOplayerViewContainer;
 
     public static MainFragment newInstance() {
         Bundle args = new Bundle();
@@ -45,6 +47,7 @@ public class MainFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        mTHEOplayerViewContainer = view.findViewById(R.id.theoplayer_view_container);
         mTHEOplayerView = view.findViewById(R.id.theoplayer_view);
 
         SourceDescription mSourceDescription = SourceDescription.Builder
@@ -65,7 +68,12 @@ public class MainFragment extends Fragment {
         view.findViewById(R.id.btn_open_share_video).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MainActivity) getActivity()).openShareVideo(mTHEOplayerView);
+                mTHEOplayerView.onPause();
+                mTHEOplayerViewContainer.removeView(mTHEOplayerView);
+                // keep current view in application
+                MyApplication.getInstance().setCurrentPlayerView(mTHEOplayerView);
+
+                ((MainActivity) getActivity()).openShareVideo(mTHEOplayerViewContainer);
             }
         });
 
@@ -136,4 +144,10 @@ public class MainFragment extends Fragment {
         }
     };
 
+    public void updateVideoUI() {
+        if(mTHEOplayerViewContainer.getChildCount() == 0){
+            ((ViewGroup)mTHEOplayerView.getParent()).removeAllViews();
+            mTHEOplayerViewContainer.addView(mTHEOplayerView);
+        }
+    }
 }

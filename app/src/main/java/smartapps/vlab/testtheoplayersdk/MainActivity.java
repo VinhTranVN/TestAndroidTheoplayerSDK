@@ -1,10 +1,9 @@
 package smartapps.vlab.testtheoplayersdk;
 
 import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-
-import com.theoplayer.android.api.THEOplayerView;
+import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,23 +14,38 @@ public class MainActivity extends AppCompatActivity {
 
         if(savedInstanceState == null){
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, new MainFragment())
+                    .replace(R.id.fragment_container, new MainFragment(), "main_fragment")
                     .commit();
         }
+
+        getSupportFragmentManager().addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+            @Override
+            public void onBackStackChanged() {
+                int backStackSize = getSupportFragmentManager().getBackStackEntryCount();
+                System.out.println(">>> backStackSize " + backStackSize);
+                //FragmentManager.BackStackEntry backStackEntryAt = getSupportFragmentManager().getBackStackEntryAt(backStackSize - 1);// top fragment
+                if(backStackSize == 0){
+                    MainFragment mainFragment = (MainFragment) getSupportFragmentManager().findFragmentByTag("main_fragment");
+                    if(mainFragment != null){
+                        mainFragment.updateVideoUI();
+                    }
+                }
+            }
+        });
     }
 
 
-    public void openShareVideo(THEOplayerView theOplayerView) {
+    public void openShareVideo(View shareView) {
         getSupportFragmentManager().beginTransaction()
-                .addSharedElement(theOplayerView, ViewCompat.getTransitionName(theOplayerView))
-                .add(R.id.fragment_container, ShareVideoFragment.newInstance())
-                .addToBackStack(null)
+                .addSharedElement(shareView, "video_container")
+                .add(R.id.fragment_container, ShareVideoFragment.newInstance(), ShareVideoFragment.class.getSimpleName())
+                .addToBackStack(ShareVideoFragment.class.getSimpleName())
                 .commit();
     }
 
     public void openVideoList() {
         getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragment_container, VideoListFragment.newInstance())
+                .add(R.id.fragment_container, VideoListFragment.newInstance(), VideoListFragment.class.getSimpleName())
                 .addToBackStack(null)
                 .commit();
     }

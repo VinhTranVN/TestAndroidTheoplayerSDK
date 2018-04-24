@@ -7,29 +7,36 @@
     android:layout_height="wrap_content"
     tools:context="smartapps.vlab.testtheoplayersdk.MainActivity">
 
-    <com.theoplayer.android.api.THEOplayerView
-        android:id="@+id/theoplayer_view"
-        android:layout_width="match_parent"
+    <FrameLayout
+        android:id="@+id/theoplayer_view_container"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:transitionName="video_view"
-        app:cssPaths="theoplayer/style.css"
-        app:jsPaths="theoplayer/jquery-3.3.1.min.js,
+        android:transitionName="video_container"
+        app:layout_constraintDimensionRatio="16:9"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.theoplayer.android.api.THEOplayerView
+            android:id="@+id/theoplayer_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:transitionName="video_view"
+            app:cssPaths="theoplayer/style.css"
+            app:jsPaths="theoplayer/jquery-3.3.1.min.js,
                      theoplayer/jquery-ui.min.js,
                      theoplayer/jquery.simulate.js,
-                     theoplayer/customTheo.js"
-        app:layout_constraintDimensionRatio="16:9"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+                     theoplayer/customTheo.js"/>
+    </FrameLayout>
+
 
     <Button
         android:id="@+id/btn_open_share_video"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Open Share Video"
-        android:enabled="false"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/theoplayer_view"/>
+        app:layout_constraintTop_toBottomOf="@id/theoplayer_view_container"/>
 
     <Button
         android:id="@+id/btn_open_video_list"
@@ -38,6 +45,6 @@
         android:text="Open Video List"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/btn_open_share_video"
-        app:layout_constraintTop_toBottomOf="@id/theoplayer_view"/>
+        app:layout_constraintTop_toBottomOf="@id/theoplayer_view_container"/>
 
 </android.support.constraint.ConstraintLayout>
