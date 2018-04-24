@@ -7,15 +7,18 @@
     android:layout_height="wrap_content"
     tools:context="smartapps.vlab.testtheoplayersdk.MainActivity">
 
-    <com.theoplayer.android.api.THEOplayerView
-        android:id="@+id/theoplayer_view"
+    <FrameLayout
+        android:id="@+id/theoplayer_view_container"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:transitionName="video_view"
+        android:transitionName="video_container"
         app:layout_constraintDimensionRatio="16:9"
-        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+    </FrameLayout>
+
 
     <Button
         android:id="@+id/fullscreen"
@@ -24,6 +27,6 @@
         android:text="Full Screen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/theoplayer_view"/>
+        app:layout_constraintTop_toBottomOf="@id/theoplayer_view_container"/>
 
 </android.support.constraint.ConstraintLayout>

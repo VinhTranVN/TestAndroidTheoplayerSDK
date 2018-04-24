@@ -4,7 +4,9 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 
 import com.theoplayer.android.api.THEOplayerView;
 import com.theoplayer.android.api.source.SourceDescription;
@@ -17,6 +19,7 @@ import smartapps.vlab.testtheoplayersdk.R;
  **/
 class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
 
+    private FrameLayout mTHEOplayerViewContainer;
     private THEOplayerView mTHEOplayerView;
     private SourceDescription mSourceDescription;
     private Rect mViewRect;
@@ -30,8 +33,7 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
     public VideoViewHolder(final View itemView) {
         super(itemView);
 
-        mTHEOplayerView = itemView.findViewById(R.id.theoplayer_view);
-        //mTHEOplayerView.getSettings().setFullScreenOrientationCoupled(true);
+        mTHEOplayerViewContainer = itemView.findViewById(R.id.theoplayer_view_container);
 
         itemView.findViewById(R.id.fullscreen).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,9 +43,19 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
         });
     }
 
-    public void bindData(T item) {
-        System.out.println(">>> bindData");
-        initVideoSource(item);
+    public void bindData(T videoItem) {
+        System.out.println(">>> bindData " + getAdapterPosition());
+        videoItem.init(itemView.getContext());
+        mTHEOplayerView = videoItem.getTheoPlayerView();
+
+        if(mTHEOplayerView.getParent() != null){
+            ((ViewGroup)mTHEOplayerView.getParent()).removeView(mTHEOplayerView);
+        }
+
+        mTHEOplayerViewContainer.removeAllViews();
+        mTHEOplayerViewContainer.addView(mTHEOplayerView);
+        mTHEOplayerViewContainer.requestLayout();
+        System.out.println(">>> w: " + mTHEOplayerView.getLayoutParams().width + " h: " + mTHEOplayerView.getLayoutParams().height);
     }
 
     private void initVideoSource(T item) {
@@ -66,8 +78,10 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
 
     public void onAttach(){
         System.out.println(">>> onAttach mOnScrollListener.hashCode() " + mOnScrollListener.hashCode());
+
         if(!isAddListener){
             //register onScroll change
+            itemView.getViewTreeObserver().removeOnScrollChangedListener(mOnScrollListener);
             itemView.getViewTreeObserver().addOnScrollChangedListener(mOnScrollListener);
             isAddListener = true;
         }
@@ -84,16 +98,22 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
         }
     }
 
+    private static final float PERCENT_VISIBLE = 0.5f;
+
     private ViewTreeObserver.OnScrollChangedListener mOnScrollListener = new ViewTreeObserver.OnScrollChangedListener() {
         @Override
         public void onScrollChanged() {
-            if (isViewVisible(0.5f)) {
+            if(mTHEOplayerView == null){
+                return;
+            }
+
+            if (isViewVisible(PERCENT_VISIBLE)) {
                 System.out.println(">>> isViewVisible >= 50% " + getAdapterPosition());
                 if(mTHEOplayerView.getPlayer().isPaused()){
                     mVideoHandle.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            if(isViewVisible(0.5f)){
+                            if(isViewVisible(PERCENT_VISIBLE)){
                                 mTHEOplayerView.getPlayer().play();
                             }
                         }
@@ -102,7 +122,7 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
 
             } else {
                 System.out.println(">>> isViewVisible < 50% " + getAdapterPosition());
-                if(!isViewVisible(0.5f) && !mTHEOplayerView.getPlayer().isPaused()){
+                if(!isViewVisible(PERCENT_VISIBLE) && !mTHEOplayerView.getPlayer().isPaused()){
                     mTHEOplayerView.getPlayer().pause();
                 }
             }

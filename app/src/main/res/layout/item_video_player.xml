@@ -1,20 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
+<com.theoplayer.android.api.THEOplayerView
+    android:id="@+id/theoplayer_view"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    tools:context="smartapps.vlab.testtheoplayersdk.MainActivity">
+    android:layout_height="match_parent"
+    android:transitionName="video_view"
+    app:cssPaths="theoplayer/style.css"
+    app:jsPaths="theoplayer/jquery-3.3.1.min.js,
+                     theoplayer/jquery-ui.min.js,
+                     theoplayer/jquery.simulate.js,
+                     theoplayer/customTheo.js"/>
 
-    <com.theoplayer.android.api.THEOplayerView
-        android:id="@+id/theoplayer_view"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:transitionName="video_view"
-        app:layout_constraintDimensionRatio="16:9"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
-
-</android.support.constraint.ConstraintLayout>
