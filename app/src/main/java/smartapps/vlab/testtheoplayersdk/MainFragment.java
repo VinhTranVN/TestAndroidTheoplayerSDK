@@ -68,7 +68,6 @@ public class MainFragment extends Fragment {
         view.findViewById(R.id.btn_open_share_video).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mTHEOplayerView.onPause();
                 mTHEOplayerViewContainer.removeView(mTHEOplayerView);
                 // keep current view in application
                 MyApplication.getInstance().setCurrentPlayerView(mTHEOplayerView);

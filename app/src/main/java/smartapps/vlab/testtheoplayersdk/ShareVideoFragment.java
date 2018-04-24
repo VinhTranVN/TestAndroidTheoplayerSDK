@@ -47,7 +47,6 @@ public class ShareVideoFragment extends Fragment {
         THEOplayerView currentPlayerView = MyApplication.getInstance().getCurrentPlayerView();
         if(currentPlayerView != null){
             mTheOplayerViewContainer.addView(currentPlayerView);
-            currentPlayerView.onResume();
         }
 
         return view;

@@ -1,0 +1,120 @@
+package smartapps.vlab.testtheoplayersdk.list;
+
+import android.graphics.Rect;
+import android.os.Handler;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.view.ViewTreeObserver;
+
+import com.theoplayer.android.api.THEOplayerView;
+import com.theoplayer.android.api.source.SourceDescription;
+import com.theoplayer.android.api.source.addescription.THEOplayerAdDescription;
+
+import smartapps.vlab.testtheoplayersdk.R;
+
+/**
+ * Created by Vinh.Tran on 4/24/18.
+ **/
+class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
+
+    private THEOplayerView mTHEOplayerView;
+    private SourceDescription mSourceDescription;
+    private Rect mViewRect;
+    private Handler mVideoHandle = new Handler();
+    private boolean isAddListener;
+
+    public static int getLayoutRes() {
+        return R.layout.item_video;
+    }
+
+    public VideoViewHolder(final View itemView) {
+        super(itemView);
+
+        mTHEOplayerView = itemView.findViewById(R.id.theoplayer_view);
+        //mTHEOplayerView.getSettings().setFullScreenOrientationCoupled(true);
+
+        itemView.findViewById(R.id.fullscreen).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mTHEOplayerView.getFullScreenManager().requestFullScreen();
+            }
+        });
+    }
+
+    public void bindData(T item) {
+        System.out.println(">>> bindData");
+        initVideoSource(item);
+    }
+
+    private void initVideoSource(T item) {
+        if (mSourceDescription == null) {
+            mSourceDescription = SourceDescription.Builder
+                    .sourceDescription(item.getVideoLink())
+                    .ads(
+                            THEOplayerAdDescription.Builder.adDescription(item.getAdsLink())
+                                    .timeOffset("10")
+                                    .skipOffset("3")
+                                    .build())
+                    .poster(item.getThumbNail())
+                    .build();
+
+            mTHEOplayerView.getPlayer().setSource(mSourceDescription);
+        } else {
+            mTHEOplayerView.onResume();
+        }
+    }
+
+    public void onAttach(){
+        System.out.println(">>> onAttach mOnScrollListener.hashCode() " + mOnScrollListener.hashCode());
+        if(!isAddListener){
+            //register onScroll change
+            itemView.getViewTreeObserver().addOnScrollChangedListener(mOnScrollListener);
+            isAddListener = true;
+        }
+    }
+
+    public void onDetachFromWindow() {
+        // remove video handle
+        mVideoHandle.removeCallbacksAndMessages(null);
+        System.out.println(">>> onDetachFromWindow isAddListener " + isAddListener);
+        if(isAddListener){
+            // remove scroll listener
+            itemView.getViewTreeObserver().removeOnScrollChangedListener(mOnScrollListener);
+            isAddListener = false;
+        }
+    }
+
+    private ViewTreeObserver.OnScrollChangedListener mOnScrollListener = new ViewTreeObserver.OnScrollChangedListener() {
+        @Override
+        public void onScrollChanged() {
+            if (isViewVisible(0.5f)) {
+                System.out.println(">>> isViewVisible >= 50% " + getAdapterPosition());
+                if(mTHEOplayerView.getPlayer().isPaused()){
+                    mVideoHandle.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(isViewVisible(0.5f)){
+                                mTHEOplayerView.getPlayer().play();
+                            }
+                        }
+                    }, 1000);
+                }
+
+            } else {
+                System.out.println(">>> isViewVisible < 50% " + getAdapterPosition());
+                if(!isViewVisible(0.5f) && !mTHEOplayerView.getPlayer().isPaused()){
+                    mTHEOplayerView.getPlayer().pause();
+                }
+            }
+        }
+    };
+
+    private boolean isViewVisible(float percentVisible) {
+        if(mViewRect == null){
+            mViewRect = new Rect();
+        }
+        itemView.getLocalVisibleRect(mViewRect);
+        int visibleHeight = mViewRect.bottom - mViewRect.top;
+        return visibleHeight / (float) itemView.getHeight() >= percentVisible;
+    }
+}
