@@ -110,6 +110,7 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
             if (isViewVisible(PERCENT_VISIBLE)) {
                 System.out.println(">>> isViewVisible >= 50% " + getAdapterPosition());
                 if(mTHEOplayerView.getPlayer().isPaused()){
+                    mVideoHandle.removeCallbacksAndMessages(null);
                     mVideoHandle.postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -117,7 +118,7 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
                                 mTHEOplayerView.getPlayer().play();
                             }
                         }
-                    }, 1000);
+                    }, 500);
                 }
 
             } else {
