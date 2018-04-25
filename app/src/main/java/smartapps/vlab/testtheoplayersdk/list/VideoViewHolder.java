@@ -38,6 +38,7 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
         itemView.findViewById(R.id.fullscreen).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mTHEOplayerViewContainer.removeAllViews();
                 mTHEOplayerView.getFullScreenManager().requestFullScreen();
             }
         });
@@ -48,7 +49,6 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
                 if(mTHEOplayerViewContainer.getChildCount() > 0){
                     mTHEOplayerViewContainer.removeAllViews();
                 } else {
-                    mTHEOplayerView.getFullScreenManager().exitFullScreen();
                     mTHEOplayerViewContainer.addView(mTHEOplayerView);
                 }
             }
@@ -58,16 +58,20 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
     public void bindData(T videoItem) {
         System.out.println(">>> bindData " + getAdapterPosition());
         videoItem.init(itemView.getContext());
-        mTHEOplayerView = videoItem.getTheoPlayerView();
+        mTHEOplayerView = videoItem.getWeekReferView();
 
+        // check for remove parent view of video view first
         if(mTHEOplayerView.getParent() != null){
             ((ViewGroup)mTHEOplayerView.getParent()).removeView(mTHEOplayerView);
         }
 
-        mTHEOplayerViewContainer.removeAllViews();
+        if(mTHEOplayerViewContainer.getChildCount() > 0){
+            mTHEOplayerViewContainer.removeAllViews();
+        }
+
+        // add video view into container
         mTHEOplayerViewContainer.addView(mTHEOplayerView);
-        mTHEOplayerViewContainer.invalidate();
-        System.out.println(">>> w: " + mTHEOplayerView.getLayoutParams().width + " h: " + mTHEOplayerView.getLayoutParams().height);
+        mTHEOplayerView.onResume();
     }
 
     private void initVideoSource(T item) {
@@ -120,7 +124,7 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
             }
 
             if (isViewVisible(PERCENT_VISIBLE)) {
-                System.out.println(">>> isViewVisible >= 50% " + getAdapterPosition());
+                System.out.println(">>> " + hashCode() + " isViewVisible >= 50% " + getAdapterPosition());
                 if(mTHEOplayerView.getPlayer().isPaused()){
                     mVideoHandle.removeCallbacksAndMessages(null);
                     mVideoHandle.postDelayed(new Runnable() {
@@ -142,7 +146,11 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
         }
     };
 
-    private boolean isViewVisible(float percentVisible) {
+    public boolean isViewVisible(float percentVisible) {
+        if(itemView == null){
+            return false;
+        }
+
         if(mViewRect == null){
             mViewRect = new Rect();
         }

@@ -3,10 +3,13 @@ package smartapps.vlab.testtheoplayersdk.list;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
 import com.theoplayer.android.api.THEOplayerView;
 import com.theoplayer.android.api.source.SourceDescription;
 import com.theoplayer.android.api.source.addescription.THEOplayerAdDescription;
+
+import java.lang.ref.WeakReference;
 
 import smartapps.vlab.testtheoplayersdk.R;
 
@@ -18,7 +21,7 @@ class ItemVideo {
     private String thumbNail;
     private String videoLink;
     private String adsLink;
-    private THEOplayerView mTheoPlayerView;
+    private WeakReference<THEOplayerView> mWeekReferView;
     boolean isVideo = true;
 
     public ItemVideo(boolean isVideo) {
@@ -29,16 +32,19 @@ class ItemVideo {
         this.thumbNail = thumbNail;
         this.videoLink = videoLink;
         this.adsLink = adsLink;
+        mWeekReferView = new WeakReference<>(null);
     }
 
     public void init(Context context){
 
-        if(mTheoPlayerView != null){
+        if(mWeekReferView.get() != null){
             return;
         }
 
+        Toast.makeText(context, "inflate video view @" + hashCode(), Toast.LENGTH_SHORT).show();
         View view = LayoutInflater.from(context).inflate(R.layout.item_video_player, null);
-        mTheoPlayerView = view.findViewById(R.id.theoplayer_view);
+        THEOplayerView theoPlayerView = view.findViewById(R.id.theoplayer_view);
+        mWeekReferView = new WeakReference<>(theoPlayerView);
 
         SourceDescription sourceDescription = SourceDescription.Builder
                 .sourceDescription(videoLink)
@@ -52,11 +58,11 @@ class ItemVideo {
                 .poster(thumbNail)
                 .build();
 
-        mTheoPlayerView.getPlayer().setSource(sourceDescription);
+        theoPlayerView.getPlayer().setSource(sourceDescription);
     }
 
-    public THEOplayerView getTheoPlayerView() {
-        return mTheoPlayerView;
+    public THEOplayerView getWeekReferView() {
+        return mWeekReferView.get();
     }
 
     public String getThumbNail() {
