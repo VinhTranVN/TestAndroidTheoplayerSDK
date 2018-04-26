@@ -1,16 +1,11 @@
 package smartapps.vlab.testtheoplayersdk.list;
 
-import android.graphics.Rect;
-import android.os.Handler;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import com.theoplayer.android.api.THEOplayerView;
-import com.theoplayer.android.api.source.SourceDescription;
-import com.theoplayer.android.api.source.addescription.THEOplayerAdDescription;
 
 import smartapps.vlab.testtheoplayersdk.R;
 
@@ -21,10 +16,6 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
 
     private FrameLayout mTHEOplayerViewContainer;
     private THEOplayerView mTHEOplayerView;
-    private SourceDescription mSourceDescription;
-    private Rect mViewRect;
-    private Handler mVideoHandle = new Handler();
-    private boolean isAddListener;
 
     public static int getLayoutRes() {
         return R.layout.item_video;
@@ -74,88 +65,14 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
         mTHEOplayerView.onResume();
     }
 
-    private void initVideoSource(T item) {
-        if (mSourceDescription == null) {
-            mSourceDescription = SourceDescription.Builder
-                    .sourceDescription(item.getVideoLink())
-                    .ads(
-                            THEOplayerAdDescription.Builder.adDescription(item.getAdsLink())
-                                    .timeOffset("10")
-                                    .skipOffset("3")
-                                    .build())
-                    .poster(item.getThumbNail())
-                    .build();
-
-            mTHEOplayerView.getPlayer().setSource(mSourceDescription);
-        } else {
-            mTHEOplayerView.onResume();
-        }
-    }
-
     public void onAttach(){
-        System.out.println(">>> onAttach mOnScrollListener.hashCode() " + mOnScrollListener.hashCode());
-
-        if(!isAddListener){
-            //register onScroll change
-            itemView.getViewTreeObserver().removeOnScrollChangedListener(mOnScrollListener);
-            itemView.getViewTreeObserver().addOnScrollChangedListener(mOnScrollListener);
-            isAddListener = true;
-        }
+        // TODO
     }
 
     public void onDetachFromWindow() {
-        // remove video handle
-        mVideoHandle.removeCallbacksAndMessages(null);
-        System.out.println(">>> onDetachFromWindow isAddListener " + isAddListener);
-        if(isAddListener){
-            // remove scroll listener
-            itemView.getViewTreeObserver().removeOnScrollChangedListener(mOnScrollListener);
-            isAddListener = false;
+        // TODO
+        if (!mTHEOplayerView.getPlayer().isPaused()) {
+            mTHEOplayerView.getPlayer().pause();
         }
-    }
-
-    private static final float PERCENT_VISIBLE = 0.5f;
-
-    private ViewTreeObserver.OnScrollChangedListener mOnScrollListener = new ViewTreeObserver.OnScrollChangedListener() {
-        @Override
-        public void onScrollChanged() {
-            if(mTHEOplayerView == null){
-                return;
-            }
-
-            if (isViewVisible(PERCENT_VISIBLE)) {
-                System.out.println(">>> " + hashCode() + " isViewVisible >= 50% " + getAdapterPosition());
-                if(mTHEOplayerView.getPlayer().isPaused()){
-                    mVideoHandle.removeCallbacksAndMessages(null);
-                    mVideoHandle.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(isViewVisible(PERCENT_VISIBLE)){
-                                mTHEOplayerView.getPlayer().play();
-                            }
-                        }
-                    }, 500);
-                }
-
-            } else {
-                System.out.println(">>> isViewVisible < 50% " + getAdapterPosition());
-                if(!isViewVisible(PERCENT_VISIBLE) && !mTHEOplayerView.getPlayer().isPaused()){
-                    mTHEOplayerView.getPlayer().pause();
-                }
-            }
-        }
-    };
-
-    public boolean isViewVisible(float percentVisible) {
-        if(itemView == null){
-            return false;
-        }
-
-        if(mViewRect == null){
-            mViewRect = new Rect();
-        }
-        itemView.getLocalVisibleRect(mViewRect);
-        int visibleHeight = mViewRect.bottom - mViewRect.top;
-        return visibleHeight / (float) itemView.getHeight() >= percentVisible;
     }
 }

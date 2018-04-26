@@ -29,4 +29,6 @@ public class MyApplication extends Application {
     public void setCurrentPlayerView(THEOplayerView currentPlayerView) {
         mCurrentPlayerView = currentPlayerView;
     }
+
+
 }

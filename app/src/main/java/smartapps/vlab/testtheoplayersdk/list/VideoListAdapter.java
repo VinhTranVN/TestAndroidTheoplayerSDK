@@ -68,4 +68,8 @@ class VideoListAdapter<T extends ItemVideo> extends RecyclerView.Adapter {
             ((VideoViewHolder) holder).onDetachFromWindow();
         }
     }
+
+    public boolean hasVideoView(int adapterPosition) {
+        return mItems.get(adapterPosition).isVideo;
+    }
 }
