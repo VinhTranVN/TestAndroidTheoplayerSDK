@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <FrameLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
@@ -16,11 +15,21 @@
 
     <TextView
         android:id="@+id/tv_info"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:text="info"
+        android:layout_gravity="bottom|left"
+        android:text="info"/>
+
+    <TextView
+        android:id="@+id/tv_orientation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_gravity="bottom|right"
+        android:text="PORTRAIT"
+        android:textColor="#00f"
         android:textSize="18sp"/>
 
-</LinearLayout>
+</FrameLayout>
 

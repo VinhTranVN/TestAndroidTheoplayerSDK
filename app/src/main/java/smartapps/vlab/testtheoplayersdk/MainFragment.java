@@ -38,14 +38,16 @@ public class MainFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_main, container, false);
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setRetainInstance(true);
     }
 
-
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        System.out.println(">>> MainFragment -> onCreateView : ");
+
+        View view = inflater.inflate(R.layout.fragment_main, container, false);
 
         mTHEOplayerViewContainer = view.findViewById(R.id.theoplayer_view_container);
         mTHEOplayerView = view.findViewById(R.id.theoplayer_view);
@@ -61,6 +63,15 @@ public class MainFragment extends Fragment {
         mTHEOplayerView.getPlayer().addEventListener(PlayerEventTypes.ENDED, mEndedEventListener);
 
         handleEvent(view);
+
+        return view;
+    }
+
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        System.out.println(">>> MainFragment -> onViewCreated : " + savedInstanceState);
     }
 
 
@@ -94,11 +105,16 @@ public class MainFragment extends Fragment {
     public void onResume() {
         super.onResume();
         mTHEOplayerView.onResume();
+
+        if(mTHEOplayerView != MyApplication.getInstance().getCurrentPlayerView()){
+            MyApplication.getInstance().setCurrentPlayerView(mTHEOplayerView);
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+        System.out.println(">>> MainFragment -> onDestroy : ");
 
         mTHEOplayerView.getPlayer().removeEventListener(PlayerEventTypes.PLAY, mPlayEventListener);
         mTHEOplayerView.getPlayer().removeEventListener(PlayerEventTypes.LOADEDDATA, mLoadVideoEventListener);

@@ -13,13 +13,16 @@ public class MainActivity extends AppCompatActivity implements OrientationDetect
 
     private OrientationDetector mOrientation;
     private TextView mTextInfo;
+    private TextView mTextOrientation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mTextInfo = findViewById(R.id.tv_info);
+        mTextOrientation = findViewById(R.id.tv_orientation);
         mOrientation = new OrientationDetector(this);
+        //mOrientation.startListening(this);
 
         if(savedInstanceState == null){
             getSupportFragmentManager().beginTransaction()
@@ -50,25 +53,27 @@ public class MainActivity extends AppCompatActivity implements OrientationDetect
     }
 
     @Override
-    protected void onStop() {
-        super.onStop();
+    protected void onPause() {
+        super.onPause();
         mOrientation.stopListening();
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //mOrientation.stopListening();
+    }
+
+    @Override
     public void onOrientationChanged(float pitch, float roll) {
-        String orientation = "";
-        // roll : rotate left/right, pith : rotate up/down
-        if(Math.abs(roll) < 70){
-            orientation = "PORTRAIT";
-        } else {
-            orientation = "LANDSCAPE";
-        }
+        mTextInfo.setText("Pitch : " + pitch + "\nRoll : " + roll);
+    }
 
-        mTextInfo.setText("Pitch : " + pitch
-                + "\nRoll " + roll +
-                "\n" + orientation);
-
+    @Override
+    public void onRotateScreen(int direction) {
+        String orientation = direction == 0 ? "PORTRAIT" : "LANDSCAPE";
+        mTextOrientation.setText(orientation);
+        MyApplication.getInstance().rotateScreen(direction);
     }
 
 
@@ -85,10 +90,5 @@ public class MainActivity extends AppCompatActivity implements OrientationDetect
                 .add(R.id.fragment_container, VideoListFragment.newInstance(), VideoListFragment.class.getSimpleName())
                 .addToBackStack(null)
                 .commit();
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-
     }
 }

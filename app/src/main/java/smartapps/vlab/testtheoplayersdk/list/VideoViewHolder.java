@@ -26,24 +26,17 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
 
         mTHEOplayerViewContainer = itemView.findViewById(R.id.theoplayer_view_container);
 
-        itemView.findViewById(R.id.fullscreen).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mTHEOplayerViewContainer.removeAllViews();
-                mTHEOplayerView.getFullScreenManager().requestFullScreen();
-            }
-        });
+        itemView.findViewById(R.id.fullscreen)
+                .setOnClickListener(v -> mTHEOplayerView.getFullScreenManager().requestFullScreen());
 
-        itemView.findViewById(R.id.remove_add_view).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(mTHEOplayerViewContainer.getChildCount() > 0){
-                    mTHEOplayerViewContainer.removeAllViews();
-                } else {
-                    mTHEOplayerViewContainer.addView(mTHEOplayerView);
-                }
-            }
-        });
+        itemView.findViewById(R.id.remove_add_view)
+                .setOnClickListener(v -> {
+                    if (mTHEOplayerViewContainer.getChildCount() > 0) {
+                        mTHEOplayerViewContainer.removeAllViews();
+                    } else {
+                        mTHEOplayerViewContainer.addView(mTHEOplayerView);
+                    }
+                });
     }
 
     public void bindData(T videoItem) {

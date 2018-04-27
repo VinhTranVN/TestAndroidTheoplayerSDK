@@ -17,6 +17,7 @@ import com.theoplayer.android.api.THEOplayerView;
 
 import java.util.ArrayList;
 
+import smartapps.vlab.testtheoplayersdk.MyApplication;
 import smartapps.vlab.testtheoplayersdk.R;
 import smartapps.vlab.testtheoplayersdk.util.UiUtils;
 
@@ -92,6 +93,11 @@ public class VideoListFragment extends Fragment {
 
                 if(videoView != null){
                     if (UiUtils.isViewVisible(videoView, 0.5f)) {
+
+                        if(videoView != MyApplication.getInstance().getCurrentPlayerView()){
+                            MyApplication.getInstance().setCurrentPlayerView(videoView);
+                        }
+
                         mVideoPlayHandler.postDelayed(() -> {
                             if(UiUtils.isViewVisible(videoView, 0.5f)){
                                 System.out.println(">>> play");
