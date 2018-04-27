@@ -1,6 +1,8 @@
 package smartapps.vlab.testtheoplayersdk;
 
 import android.app.Application;
+import android.provider.Settings;
+import android.widget.Toast;
 
 import com.theoplayer.android.api.THEOplayerView;
 
@@ -18,11 +20,14 @@ public class MyApplication extends Application {
 
     private static MyApplication sInstance;
     private THEOplayerView mCurrentPlayerView;
+    private boolean mIsRotation;
 
     @Override
     public void onCreate() {
         super.onCreate();
         sInstance = this;
+
+        mIsRotation = Settings.System.getInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1;
     }
 
     public static MyApplication getInstance() {
@@ -45,6 +50,21 @@ public class MyApplication extends Application {
      * @param direction 0: portrait, 1: landscape
      */
     public void rotateScreen(int direction){
+
+        boolean isRotationOn = Settings.System.getInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0) == 1;
+        if (isRotationOn) {
+            if(isRotationOn != mIsRotation){
+                Toast.makeText(getApplicationContext(), "Auto Rotate is ON", Toast.LENGTH_SHORT).show();
+            }
+            mIsRotation = isRotationOn;
+        } else {
+            if(isRotationOn != mIsRotation){
+                Toast.makeText(getApplicationContext(), "Auto Rotate is OFF", Toast.LENGTH_SHORT).show();
+            }
+            mIsRotation = isRotationOn;
+            return;
+        }
+
         if(mCurrentPlayerView == null){
             return;
         }
