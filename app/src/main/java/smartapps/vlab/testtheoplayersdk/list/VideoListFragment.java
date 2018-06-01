@@ -30,6 +30,7 @@ public class VideoListFragment extends Fragment {
     private VideoListAdapter mAdapter;
     private Handler mVideoPlayHandler;
     private LinearLayoutManager mLinearLayoutManager;
+    private RecyclerView mRecyclerView;
 
     public static VideoListFragment newInstance() {
         Bundle args = new Bundle();
@@ -49,14 +50,14 @@ public class VideoListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_video_list, container, false);
 
-        RecyclerView recyclerView = view.findViewById(R.id.recycle_view);
+        mRecyclerView = view.findViewById(R.id.recycle_view);
         mLinearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(mLinearLayoutManager);
+        mRecyclerView.setLayoutManager(mLinearLayoutManager);
 
         mAdapter = new VideoListAdapter(getVideoItems());
-        recyclerView.setAdapter(mAdapter);
+        mRecyclerView.setAdapter(mAdapter);
 
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
@@ -119,27 +120,12 @@ public class VideoListFragment extends Fragment {
     @NonNull
     private ArrayList getVideoItems() {
         ArrayList videos = new ArrayList();
-        for (int i = 0; i < 8; i++) { // 8 items
-            if(i % 2 == 0){
-                if(i == 2 || i == 6){
-                    videos.add(new ItemVideo(
-                            "https://res.cloudinary.com/mbc-net/image/upload/v1523336570/2018/04/10/ihjsgt1mbmji0jttnohy.jpg",
-                            //"https://vamvideos.s3.amazonaws.com/hls/2018/04/10/Justin+Bieber+-+One+Time_574919825.m3u8",
-                            "https://vamvideos.s3.amazonaws.com/hls/2018/03/30/NuHonDanhRoiThangNamRucRoOst-HoangYenChibi-5414366_570692921.m3u8",
-                            "https://cdn.theoplayer.com/demos/preroll.xml"
-                    ));
-                } else {
-                    // demo source
-                    videos.add(new ItemVideo(
-                            "http://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg",
-                            "https://cdn.theoplayer.com/video/elephants-dream/playlist.m3u8",
-                            "https://cdn.theoplayer.com/demos/preroll.xml"
-                    ));
-                }
-            } else {
-                videos.add(new ItemVideo(false)); // not video
-            }
-        }
+        // demo source
+        videos.add(new ItemVideo(
+                "http://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg",
+                "https://cdn.theoplayer.com/video/elephants-dream/playlist.m3u8",
+                "https://cdn.theoplayer.com/demos/preroll.xml"
+        ));
 
         return videos;
     }
@@ -155,6 +141,18 @@ public class VideoListFragment extends Fragment {
     public void onStop() {
         super.onStop();
         mVideoPlayHandler.removeCallbacksAndMessages(null);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d(getClass().getSimpleName(), ">>> onDestroy: ");
+        try {
+            mAdapter.destroy();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        mRecyclerView.setAdapter(null);
     }
 
     static class OtherViewHolder extends RecyclerView.ViewHolder {

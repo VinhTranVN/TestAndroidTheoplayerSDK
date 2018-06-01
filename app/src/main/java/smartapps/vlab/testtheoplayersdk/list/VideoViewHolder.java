@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.theoplayer.android.api.THEOplayerDestroyedException;
 import com.theoplayer.android.api.THEOplayerView;
 
 import smartapps.vlab.testtheoplayersdk.R;
@@ -42,7 +43,7 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
     public void bindData(T videoItem) {
         System.out.println(">>> bindData " + getAdapterPosition());
         videoItem.init(itemView.getContext());
-        mTHEOplayerView = videoItem.getWeekReferView();
+        mTHEOplayerView = videoItem.getTheoPlayerView();
 
         // check for remove parent view of video view first
         if(mTHEOplayerView.getParent() != null){
@@ -63,9 +64,16 @@ class VideoViewHolder<T extends ItemVideo> extends RecyclerView.ViewHolder {
     }
 
     public void onDetachFromWindow() {
-        // TODO
-        if (!mTHEOplayerView.getPlayer().isPaused()) {
-            mTHEOplayerView.getPlayer().pause();
+        pauseVideo();
+    }
+
+    public void pauseVideo() {
+        try {
+            if (!mTHEOplayerView.getPlayer().isPaused()) {
+                mTHEOplayerView.getPlayer().pause();
+            }
+        } catch (THEOplayerDestroyedException e) {
+            e.printStackTrace();
         }
     }
 }

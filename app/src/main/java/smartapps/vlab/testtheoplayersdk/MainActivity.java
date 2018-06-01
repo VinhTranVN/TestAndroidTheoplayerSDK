@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements OrientationDetect
                 if(backStackSize == 0){
                     MainFragment mainFragment = (MainFragment) getSupportFragmentManager().findFragmentByTag("main_fragment");
                     if(mainFragment != null){
-                        mainFragment.updateVideoUI();
+                        //mainFragment.updateVideoUI();
                     }
                 }
             }
