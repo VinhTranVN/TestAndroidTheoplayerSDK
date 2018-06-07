@@ -40,7 +40,9 @@ class ItemVideo {
             return;
         }
 
-        Toast.makeText(context, "inflate video view @" + hashCode(), Toast.LENGTH_SHORT).show();
+        String text = "inflate video view @" + hashCode();
+        System.out.println(">>> init video " + text);
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
         View view = LayoutInflater.from(context).inflate(R.layout.item_video_player, null);
         THEOplayerView theoPlayerView = view.findViewById(R.id.theoplayer_view);
         mWeakReferView = new WeakReference<>(theoPlayerView);

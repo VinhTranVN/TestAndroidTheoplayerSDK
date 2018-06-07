@@ -40,7 +40,7 @@ public class MyApplication extends Application {
 
     public void setCurrentPlayerView(THEOplayerView currentPlayerView) {
         if(mCurrentPlayerView != currentPlayerView){
-            System.out.println(">>> MyApplication setCurrentPlayerView " + currentPlayerView.hashCode());
+            //System.out.println(">>> MyApplication setCurrentPlayerView " + currentPlayerView.hashCode());
             mCurrentPlayerView = currentPlayerView;
         }
     }

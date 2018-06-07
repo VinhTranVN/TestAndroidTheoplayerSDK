@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.theoplayer.android.api.THEOplayerDestroyedException;
 import com.theoplayer.android.api.THEOplayerView;
 
 import java.util.ArrayList;
@@ -102,12 +103,20 @@ public class VideoListFragment extends Fragment {
                         mVideoPlayHandler.postDelayed(() -> {
                             if(UiUtils.isViewVisible(videoView, 0.5f)){
                                 System.out.println(">>> play");
-                                videoView.getPlayer().play();
+                                try {
+                                    videoView.getPlayer().play();
+                                } catch (THEOplayerDestroyedException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         }, 500);
                     } else {
                         System.out.println(">>> pause");
-                        videoView.getPlayer().pause();
+                        try {
+                            videoView.getPlayer().pause();
+                        } catch (THEOplayerDestroyedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
 
@@ -120,12 +129,27 @@ public class VideoListFragment extends Fragment {
     @NonNull
     private ArrayList getVideoItems() {
         ArrayList videos = new ArrayList();
-        // demo source
-        videos.add(new ItemVideo(
-                "http://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg",
-                "https://cdn.theoplayer.com/video/elephants-dream/playlist.m3u8",
-                "https://cdn.theoplayer.com/demos/preroll.xml"
-        ));
+        for (int i = 0; i < 8; i++) { // 8 items
+            if(i % 2 == 0){
+                if(i == 2 || i == 6){
+                    videos.add(new ItemVideo(
+                            "https://res.cloudinary.com/mbc-net/image/upload/v1523336570/2018/04/10/ihjsgt1mbmji0jttnohy.jpg",
+                            //"https://vamvideos.s3.amazonaws.com/hls/2018/04/10/Justin+Bieber+-+One+Time_574919825.m3u8",
+                            "https://vamvideos.s3.amazonaws.com/hls/2018/03/30/NuHonDanhRoiThangNamRucRoOst-HoangYenChibi-5414366_570692921.m3u8",
+                            "https://cdn.theoplayer.com/demos/preroll.xml"
+                    ));
+                } else {
+                    // demo source
+                    videos.add(new ItemVideo(
+                            "http://cdn.theoplayer.com/video/big_buck_bunny/poster.jpg",
+                            "https://cdn.theoplayer.com/video/elephants-dream/playlist.m3u8",
+                            "https://cdn.theoplayer.com/demos/preroll.xml"
+                    ));
+                }
+            } else {
+                videos.add(new ItemVideo(false)); // not video
+            }
+        }
 
         return videos;
     }
@@ -144,15 +168,17 @@ public class VideoListFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
         Log.d(getClass().getSimpleName(), ">>> onDestroy: ");
         try {
+            MyApplication.getInstance().setCurrentPlayerView(null);
             mAdapter.destroy();
         } catch (Exception e) {
             e.printStackTrace();
         }
         mRecyclerView.setAdapter(null);
+
+        super.onDestroyView();
     }
 
     static class OtherViewHolder extends RecyclerView.ViewHolder {

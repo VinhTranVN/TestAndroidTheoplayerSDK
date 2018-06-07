@@ -1,12 +1,13 @@
 package smartapps.vlab.testtheoplayersdk;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import smartapps.vlab.testtheoplayersdk.list.VideoListFragment;
+import smartapps.vlab.testtheoplayersdk.list.VideoListActivity;
 import smartapps.vlab.testtheoplayersdk.util.OrientationDetector;
 
 public class MainActivity extends AppCompatActivity implements OrientationDetector.Listener {
@@ -86,9 +87,11 @@ public class MainActivity extends AppCompatActivity implements OrientationDetect
     }
 
     public void openVideoList() {
-        getSupportFragmentManager().beginTransaction()
+        /*getSupportFragmentManager().beginTransaction()
                 .add(R.id.fragment_container, VideoListFragment.newInstance(), VideoListFragment.class.getSimpleName())
                 .addToBackStack(null)
-                .commit();
+                .commit();*/
+
+        startActivity(new Intent(this, VideoListActivity.class));
     }
 }
